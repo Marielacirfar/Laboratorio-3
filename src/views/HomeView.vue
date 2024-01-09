@@ -1,16 +1,23 @@
 <template>
   <div class="home">
-   aqui va login
+   <NavBar/>
+   <InicioComp/>
+   
+   
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
+import NavBar from "../components/NavBar.vue"
+import InicioComp from "../components/InicioComp.vue"
 
 
 export default {
   name: 'HomeView',
   components: {
+    NavBar,
+    InicioComp
+    
     
   }
 }

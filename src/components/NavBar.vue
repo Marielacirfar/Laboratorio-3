@@ -2,35 +2,14 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-     
-    </div>
+    <a class="navbar-brand" >CyptoMar <img src="../assets/crypto.png" /></a>
+    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-black">
+          <li><router-link to="./RegistroComponent" class="nav-link px-2 text-black">Registro</router-link></li>
+          <li><router-link to="./NegociacionComp" class="nav-link px-2 text-black">Negociación</router-link></li>
+          <li><router-link to="./HistorialMov" class="nav-link px-2 text-black">Historial de movimientos</router-link></li>
+          <li><router-link to="./EstadoActual" class="nav-link px-2 text-black">Estado actual</router-link></li>
+    </ul>
+    
   </div>
 </nav>
 
@@ -39,15 +18,20 @@
 
 <script>
 export default {
-    setup () {
-        
+    
+     name: "NavBar",
 
-        return {}
-    }
-}
+       
+    };
+
 </script>
 
 <style lang="scss" scoped>
+img{
+  height: 1.5em;
+  width: 1.5em;
+}
+
 
 </style>
 

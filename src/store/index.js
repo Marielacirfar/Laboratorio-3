@@ -1,14 +1,16 @@
-import { createStore } from 'vuex'
+// import Vue from 'vue';
+import Vuex from 'vuex';
 
-export default createStore({
+export default new Vuex.Store({
   state: {
-  },
-  getters: {
+    userEmail: localStorage.getItem('userEmail') || '', // This is where the user email will be stored
   },
   mutations: {
+    setUserEmail(state, userEmail) {
+      state.userEmail = userEmail; // Update the user email in the store
+      localStorage.setItem('userEmail', userEmail)
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
-})
+  actions: {},
+  modules: {},
+});
