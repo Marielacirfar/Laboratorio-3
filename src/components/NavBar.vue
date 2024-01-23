@@ -1,37 +1,37 @@
 <template>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" >CyptoMar <img src="../assets/crypto.png" /></a>
-    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-black">
-          <li><router-link to="./RegistroComponent" class="nav-link px-2 text-black">Registro</router-link></li>
-          <li><router-link to="./NegociacionComp" class="nav-link px-2 text-black">Negociación</router-link></li>
-          <li><router-link to="./HistorialMov" class="nav-link px-2 text-black">Historial de movimientos</router-link></li>
-          <li><router-link to="./EstadoActual" class="nav-link px-2 text-black">Estado actual</router-link></li>
-    </ul>
-    
-  </div>
-</nav>
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand">CyptoMar <img src="../assets/crypto.png" /></a>
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-black">
+          <li><router-link to="./presentacionComp" class="nav-link px-2 text-black">Presentacion</router-link></li>
 
-    </div>
+          <li><router-link to="./NegociacionComp" class="nav-link px-2 text-black">Negociación</router-link></li>
+          <li><router-link to="./HistorialMov" class="nav-link px-2 text-black">Historial de movimientos</router-link>
+          </li>
+          <li><router-link to="./EstadoActual" class="nav-link px-2 text-black">Estado actual</router-link></li>
+        </ul>
+
+      </div>
+    </nav>
+
+  </div>
 </template>
 
 <script>
 export default {
-    
-     name: "NavBar",
 
-       
-    };
+  name: "NavBar",
+
+
+};
 
 </script>
 
 <style lang="scss" scoped>
-img{
+img {
   height: 1.5em;
   width: 1.5em;
 }
-
-
 </style>
 

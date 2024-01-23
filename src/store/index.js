@@ -3,14 +3,16 @@ import Vuex from 'vuex';
 
 export default new Vuex.Store({
   state: {
-    userEmail: localStorage.getItem('userEmail') || '', // This is where the user email will be stored
+    userEmail: localStorage.getItem('userEmail') || '',
   },
   mutations: {
     setUserEmail(state, userEmail) {
-      state.userEmail = userEmail; // Update the user email in the store
+      state.userEmail = userEmail;
       localStorage.setItem('userEmail', userEmail)
     },
   },
   actions: {},
   modules: {},
 });
+<style>
+</style>

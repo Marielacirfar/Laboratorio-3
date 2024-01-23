@@ -4,6 +4,7 @@ import NegociacionView from '../views/NegociacionView';
 import RegistroView from '../views/RegistroView';
 import HistorialView from '../views/HistorialView';
 import EstadoActualView from '../views/EstadoActualView';
+import PresentacionView from '@/views/PresentacionView.vue';
 
 const routes = [
   {
@@ -27,7 +28,7 @@ const routes = [
   {
     path: '/InicioComp',
     name: 'InicioComp',
-    component: () => import ('../components/InicioComp.vue')
+    component: () => import('../components/InicioComp.vue')
   },
   {
     path: '/NegociacionComp',
@@ -44,6 +45,11 @@ const routes = [
     name: 'EstadoActual',
     component: EstadoActualView,
   },
+  {
+    path: '/presentacionComp',
+    name: 'presentacionComp',
+    component: PresentacionView,
+  }
 ]
 
 const router = createRouter({
