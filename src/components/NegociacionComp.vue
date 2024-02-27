@@ -34,10 +34,18 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            La cantidad {{ action }} de: {{ cryptoCode }} es: {{ action === 'compra' ? cryptoAmountCompra :
+                            La cantidad de {{ action }} de: {{ cryptoCode }} es: {{ action === 'compra' ? cryptoAmountCompra
+                                :
                                 cryptoAmountVenta }}
                         </li>
-                        <li class="list-group-item">El precio pagado es: {{ money }}</li>
+                        <li class="list-group-item">El total pagado es: $ {{ action === 'compra' ? totalAsk *
+                            cryptoAmountCompra :
+                            totalBid * cryptoAmountVenta }}
+
+                        </li>
+
+                        <li class="list-group-item">Fecha {{ formatoFecha() }}</li>
+
                     </ul>
                 </div>
             </div>
@@ -78,8 +86,7 @@
                         <th>Cantidad Comprada</th>
                         <th>Cantidad Vendida</th>
                         <th>Disponibilidad</th>
-                        <th>Precio de compra</th>
-                        <th>Precio de venta</th>
+                        <th>Precio pagado por unidad</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
@@ -89,9 +96,11 @@
                         <td>{{ transaccion.action }}</td>
                         <td>{{ transaccion.action === 'venta' ? '-' : transaccion.cryptoAmountCompra }}</td>
                         <td>{{ transaccion.action === 'compra' ? '-' : transaccion.cryptoAmountVenta }}</td>
-                        <td>"-"</td>
+                        <td>"{{ transaccion.disponibilidad }}"</td>
                         <td>{{ transaccion.money }}</td>
-                        <td>{{ transaccion.money }}</td>
+
+
+
                         <td>{{ transaccion.datetime }}</td>
                     </tr>
                 </tbody>
@@ -105,18 +114,21 @@
 
 <script>
 import axios from 'axios';
+import cryptoService from '../services/cryptoService'
 
 export default {
     name: "NegociacionComp",
     data() {
         return {
-            userId: this.$store.state.userEmail,
+            userId: this.$store.state.nombreUsuario,
             action: "",
             cryptoCode: "",
             cryptoAmount: "",
-            cryptoAmontCompra: "",
+            cryptoAmountCompra: "",
             cryptoAmountVenta: "",
-            money: "2500",
+            totalAsk: "",
+            totalBid: "",
+            money: "",
             cryptos: {
                 "Bitcoin (BTC)": "BTC",
                 "Ethereum (ETH)": "ETH",
@@ -128,17 +140,21 @@ export default {
         }
     },
     methods: {
-        cambiarAccion(accion) {
+        async cambiarAccion(accion) {
             this.action = accion;
-
 
             const tipo = this.action === 'compra' ? this.tipoCompra : this.tipoVenta;
             if (tipo) {
                 this.cryptoCode = this.cryptos[tipo];
+
+                if (this.action === 'compra') {
+                    this.totalAsk = await cryptoService.getCryptoInfo(this.cryptoCode, 'compra');
+                } else if (this.action === 'venta') {
+                    this.totalBid = await cryptoService.getCryptoInfo(this.cryptoCode, 'venta');
+                }
             } else {
                 this.cryptoCode = '';
             }
-            console.log("acá gil", this.action)
         },
 
         formatoFecha() {
@@ -160,12 +176,36 @@ export default {
                 const apiKey = '60eb09146661365596af552f';
                 let action = "";
                 let cryptoAmount = ""
+                let disponibilidad = "-"
+
+                let cryptoPrice = await cryptoService.getCryptoInfo(this.cryptoCode, this.action);
+
+                if (this.$data.action == 'venta') {
+                    const cantidadComprada = this.historialTransacciones
+                        .filter(transaccion => transaccion.action === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
+                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
+
+                    if (parseFloat(this.cryptoAmountVenta) > cantidadComprada) {
+
+                        console.error('No hay suficiente cantidad para vender');
+                        return;
+                    }
+
+
+                    disponibilidad = cantidadComprada - parseFloat(this.cryptoAmountVenta);
+                } else if (this.$data.action == 'compra') {
+
+                    disponibilidad = parseFloat(this.cryptoAmountCompra);
+                }
+
                 if (this.$data.action == 'compra') {
                     action = 'purchase';
                     cryptoAmount = this.cryptoAmountCompra
+
                 } else if (this.$data.action == 'venta') {
                     action = 'sale'
                     cryptoAmount = this.cryptoAmountVenta
+
                 }
                 let body = {
                     "user_id": this.$data.userId,
@@ -173,7 +213,7 @@ export default {
                     "crypto_code": this.$data.cryptoCode,
                     "crypto_amount": cryptoAmount,
 
-                    "money": this.$data.money,
+                    "money": cryptoPrice,
                     "datetime": this.formatoFecha()
                 }
                 const response = await axios.post(
@@ -191,7 +231,8 @@ export default {
                     action: this.action,
                     cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
                     cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
-                    money: this.money,
+                    money: cryptoPrice,
+                    disponibilidad: disponibilidad,
                     datetime: this.formatoFecha(),
                 });
 
@@ -200,6 +241,8 @@ export default {
                 console.error('Error:', error);
             }
         },
+
+
     },
     computed: {
         cryptoImage() {

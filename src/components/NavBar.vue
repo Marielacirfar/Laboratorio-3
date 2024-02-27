@@ -4,7 +4,7 @@
       <div class="container-fluid">
         <a class="navbar-brand">CyptoMar <img src="../assets/crypto.png" /></a>
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-black">
-          <li><router-link to="./presentacionComp" class="nav-link px-2 text-black">Presentacion</router-link></li>
+
 
           <li><router-link to="./NegociacionComp" class="nav-link px-2 text-black">Negociación</router-link></li>
           <li><router-link to="./HistorialMov" class="nav-link px-2 text-black">Historial de movimientos</router-link>

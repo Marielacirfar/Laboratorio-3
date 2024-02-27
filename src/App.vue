@@ -30,12 +30,29 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
+body {
+  background-color: rgb(66, 60, 60);
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #e5e9ed;
+}
+
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #eef0f2;
+}
+
+nav a.router-link-exact-active {
+  color: #b9dacb;
 }
 </style>

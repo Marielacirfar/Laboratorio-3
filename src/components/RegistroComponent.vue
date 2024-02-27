@@ -1,64 +1,60 @@
 <template>
-    <div class="form-registro m-auto mb-3">
-        <form @submit.prevent="crearUsuario">
-            <h1 class="h1">Registrese aqui</h1>
-            <div class="form-floating">
-                <input type="text" class="form-control mb3" id="nombreUsuario" name="nombreUsuario" v-model="email"
-                    :class="{ 'invalid-email': !isEmailValid }" />
-                <label for="floatingInput">Ingrese su email</label>
-            </div>
-            <p v-if="!isEmailValid" class="text-danger">Ingrese un email válido</p>
+    <div>
+        <div class="form-registro m-auto mb-3">
+            <form @submit.prevent="crearUsuario">
+                <h1 class="h1">Registrese aqui</h1>
+                <label for="">El nombre de usuario debe ser alfanumerico</label>
+                <div class="form-floating">
 
-            <br /><br />
-            <button class="w-100 btn-lg btn-primary" @click.prevent="crearUsuario">Registro</button>
-        </form>
+                    <input type="text" class="form-control mb3" id="nombreUsuario" name="nombreUsuario"
+                        v-model="nombreUsuario" placeholder="Ingrese su usuario"
+                        :class="{ 'invalid-usuario': !isUsuarioValid }" />
+                    <label for="floatingInput">Ingrese su usuario</label>
+                </div>
+                <p v-if="!isUsuarioValid && nombreUsuario !== ''" class="text-danger">El nombre de usuario no es válido.
+                    Debe
+                    tener al menos 10 caracteres y contener al menos una letra y un número.</p>
+
+                <br /><br />
+
+                <button type="button" class="btn btn-light" @click.prevent="crearUsuario">Registro</button>
+            </form>
+        </div>
     </div>
 </template>
+  
   
 <script>
 export default {
     name: "RegistroComponent",
     data() {
         return {
-            email: "",
+            nombreUsuario: "",
         };
     },
     computed: {
-        isEmailValid() {
-            // Email validation regex
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(this.email);
-        },
+        isUsuarioValid() {
+            return this.nombreUsuario !== "" && this.nombreUsuario.length >= 10 && /[a-zA-Z]/.test(this.nombreUsuario) && /\d/.test(this.nombreUsuario);
+        }
     },
-
     methods: {
         crearUsuario: function () {
-            // Email validation regex
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (this.email === "") {
-                alert("El usuario es obligatorio");
-                this.$router.push("/");
-            } else if (!emailRegex.test(this.email)) {
-                alert("Ingrese un email válido");
-                this.$router.push("/");
-            } else {
-                // Use the setUserId mutation to save the email in the store
-                this.$store.commit("setUserEmail", this.email);
-
-                // Now you can check if the email is correctly saved in the store
-                console.log("User email saved in store:", this.$store.state.userEmail);
-
-                // Redirect to the desired route
-                this.$router.push("/NegociacionComp");
+            if (!this.isUsuarioValid) {
+                return; // No hacer nada si el usuario no es válido
             }
-        },
-    },
-};
+
+            this.$store.commit("setNombreUsuario", this.nombreUsuario);
+
+            console.log("User email saved in store:", this.$store.state.nombreUsuario);
+            this.$router.push("/NegociacionComp");
+        }
+    }
+}
+
 </script>
-  
-  
-<style>
+
+
+<style scoped>
 body {
     background-color: black;
 }
@@ -80,13 +76,12 @@ body {
     padding: 15px;
 }
 
-.invalid-email {
+.invalid-usuario {
     border: 1px solid red;
-    /* Change the style for invalid email */
+
 }
 
 .form-registro .form-floating:focus-within {
     z-index: 2;
 }
 </style>
-  
