@@ -7,30 +7,30 @@
         <div class="row">
 
             <div class="col-12 col-md-4">
-                <form @submit.prevent="registrarProyecto">
-                    <label class="form-label text-white">Tipo de moneda que desea comprar</label>
-                    <select v-model.trim="tipoCompra" class="form-select" required>
-                        <option disabled selected value="">Seleccione una moneda</option>
-                        <option>Bitcoin (BTC)</option>
-                        <option>Ethereum (ETH)</option>
-                        <option>Tether (USDT)</option>
-                        <option>Dai</option>
-                    </select>
-                    <label class="form-label text-white">Seleccione la cantidad que desea comprar</label>
-                    <input type="number" v-model.trim="cryptoAmountCompra">
-                    <button type="button"
-                        :class="{ 'btn btn-primary': action === 'compra', 'btn btn-outline-primary': action !== 'compra' }"
-                        @click="cambiarAccion('compra')">
-                        Compra
-                    </button>
-                </form>
+
+                <label class="form-label text-white">Tipo de moneda que desea comprar</label>
+                <select v-model.trim="tipoCompra" class="form-select" required>
+                    <option disabled selected value="">Seleccione una moneda</option>
+                    <option>Bitcoin (BTC)</option>
+                    <option>Ethereum (ETH)</option>
+                    <option>Tether (USDT)</option>
+                    <option>Dai</option>
+                </select>
+                <label class="form-label text-white">Seleccione la cantidad que desea comprar</label>
+                <input type="number" v-model.trim="cryptoAmountCompra">
+                <button type="button"
+                    :class="{ 'btn btn-primary': action === 'compra', 'btn btn-outline-primary': action !== 'compra' }"
+                    @click="cambiarAccion('compra')">
+                    Compra
+                </button>
+
             </div>
 
             <div class="col-12 col-md-4 mx-auto">
                 <div class="card" style="width: 25rem;">
                     <img :src="cryptoImage" :key="cryptoImage" class="card-img-top" alt="Crypto Image">
                     <div class="card-body">
-                        <h5 class="card-title">{{ action }}</h5>
+                        <h3 class="card-title">{{ action }}</h3>
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
@@ -86,7 +86,8 @@
                         <th>Cantidad Comprada</th>
                         <th>Cantidad Vendida</th>
                         <th>Disponibilidad</th>
-                        <th>Precio pagado por unidad</th>
+                        <th>Precio pagado por la compra</th>
+                        <th>Precio obtenido por la venta</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
@@ -96,11 +97,9 @@
                         <td>{{ transaccion.action }}</td>
                         <td>{{ transaccion.action === 'venta' ? '-' : transaccion.cryptoAmountCompra }}</td>
                         <td>{{ transaccion.action === 'compra' ? '-' : transaccion.cryptoAmountVenta }}</td>
-                        <td>"{{ transaccion.disponibilidad }}"</td>
-                        <td>{{ transaccion.money }}</td>
-
-
-
+                        <td>{{ transaccion.disponibilidad }}</td>
+                        <td>"{{ transaccion.action === 'venta' ? '-' : transaccion.totalAsk }}"</td>
+                        <td>"{{ transaccion.action === 'compra' ? '-' : transaccion.totalBid }}"</td>
                         <td>{{ transaccion.datetime }}</td>
                     </tr>
                 </tbody>
@@ -177,8 +176,7 @@ export default {
                 let action = "";
                 let cryptoAmount = ""
                 let disponibilidad = "-"
-
-                let cryptoPrice = await cryptoService.getCryptoInfo(this.cryptoCode, this.action);
+                let money = ""
 
                 if (this.$data.action == 'venta') {
                     const cantidadComprada = this.historialTransacciones
@@ -194,17 +192,23 @@ export default {
 
                     disponibilidad = cantidadComprada - parseFloat(this.cryptoAmountVenta);
                 } else if (this.$data.action == 'compra') {
+                    const cantidadCompradaActual = parseFloat(this.cryptoAmountCompra);
+                    const cantidadCompradaTotalAnterior = this.historialTransacciones
+                        .filter(transaccion => transaccion.accion === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
+                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0)
 
-                    disponibilidad = parseFloat(this.cryptoAmountCompra);
+                    disponibilidad = cantidadCompradaActual + cantidadCompradaTotalAnterior;
                 }
 
                 if (this.$data.action == 'compra') {
                     action = 'purchase';
                     cryptoAmount = this.cryptoAmountCompra
+                    money = this.totalAsk * this.cryptoAmountCompra
 
                 } else if (this.$data.action == 'venta') {
                     action = 'sale'
                     cryptoAmount = this.cryptoAmountVenta
+                    money = this.totalBid * this.cryptoAmountVenta
 
                 }
                 let body = {
@@ -212,8 +216,7 @@ export default {
                     "action": action,
                     "crypto_code": this.$data.cryptoCode,
                     "crypto_amount": cryptoAmount,
-
-                    "money": cryptoPrice,
+                    "money": money,
                     "datetime": this.formatoFecha()
                 }
                 const response = await axios.post(
@@ -231,7 +234,8 @@ export default {
                     action: this.action,
                     cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
                     cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
-                    money: cryptoPrice,
+                    totalAsk: this.action === 'compra' ? money : '-',
+                    totalBid: this.action === 'venta' ? money : '-',
                     disponibilidad: disponibilidad,
                     datetime: this.formatoFecha(),
                 });
@@ -247,21 +251,15 @@ export default {
     computed: {
         cryptoImage() {
 
-            const tipo = this.action === 'compra' ? this.tipoCompra : this.tipoVenta;
+            const imagenMapping = {
+                BTC: require('../assets/Bitcoin(BTC).png'),
+                ETH: require('../assets/Ethereum(ETH).png'),
+                USDT: require('../assets/Tether(USDT).png'),
+                DAI: require('../assets/Dai.jpg'),
+                default: require('../assets/crypto.png')
+            };
+            return imagenMapping[this.cryptoCode] || imagenMapping.default;
 
-
-            if (tipo === 'Bitcoin (BTC)') {
-                return require('../assets/Bitcoin(BTC).png');
-            } else if (tipo === 'Ethereum (ETH)') {
-                return require('../assets/Ethereum(ETH).png');
-            } else if (tipo === 'Tether (USDT)') {
-                return require('../assets/Tether(USDT).png');
-            } else if (tipo === 'Dai') {
-                return require('../assets/Dai.jpg');
-            } else {
-
-                return require('../assets/crypto.png');
-            }
         },
     },
 
@@ -282,6 +280,13 @@ form {
     padding: 5px;
     color: aliceblue;
 }
+
+.card-title {
+    color: rgb(42, 22, 22);
+    font-size: xx-large;
+    text-shadow: 2px 2px 5px rgba(245, 34, 34, 0.54);
+}
+
 
 select {
 
