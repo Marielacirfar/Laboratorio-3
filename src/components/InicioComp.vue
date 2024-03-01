@@ -9,7 +9,7 @@
 
     <table class="table text-light table-hover border-light">
       <thead>
-        <tr>
+        <tr class="encabezado">
           <th scope="col">Bitcoin <img class="logocript" src="../assets/Bitcoin(BTC).png" /></th>
           <th scope="col">Precio de Compra</th>
           <th scope="col">Precio de Venta</th>
@@ -26,7 +26,7 @@
     </table>
     <table class="table text-light table-hover border-light">
       <thead>
-        <tr>
+        <tr class="encabezado">
           <th scope="col"> Ethereum <img class="logocript" src="../assets/Ethereum(ETH).png" /></th>
           <th scope="col">Precio de Compra</th>
           <th scope="col">Precio de Venta</th>
@@ -43,7 +43,7 @@
     </table>
     <table class="table text-light table-hover border-lightt">
       <thead>
-        <tr>
+        <tr class="encabezado">
           <th scope="col"> DAI <img class="logocript" src="../assets/Dai.jpg" /></th>
           <th scope="col">Precio de Compra</th>
           <th scope="col">Sale Price</th>
@@ -60,7 +60,7 @@
     </table>
     <table class="table text-light table-hover border-light">
       <thead>
-        <tr>
+        <tr class="encabezado">
           <th scope="col">Tether (USDT) <img class="logocript" src="../assets/Tether(USDT).png" /></th>
           <th scope="col">Precio de Compra</th>
           <th scope="col">Precio de Venta</th>
@@ -97,7 +97,7 @@ export default {
     };
 
     axios.request(optionsBtc).then(response => {
-      const firstExchangeBtc = Object.keys(response.data)[0]
+      const firstExchangeBtc = Object.keys(response.data)[1]
 
       if (firstExchangeBtc) {
         this.exchangesBtc = [{
@@ -114,40 +114,36 @@ export default {
     };
 
     axios.request(optionsEth).then(response => {
-      // Get the first key of the response data
-      const firstExchangeEth = Object.keys(response.data)[0];
 
-      // Check if there is a valid key before creating the array
+      const firstExchangeEth = Object.keys(response.data)[1];
+
+
       if (firstExchangeEth) {
         this.exchangesEth = [{
           exchangeEth: firstExchangeEth,
           bid: response.data[firstExchangeEth].totalBid,
           ask: response.data[firstExchangeEth].totalAsk,
-        }];
-
-        this.$store.commit("EthBid", this.exchangesEth.bid)
-        console.log(this.$store.state.EthBid)
-      } else {
-        // Handle the case where there is no valid key
-        console.warn("No valid data in the response");
+        }]
       }
-    }).catch(function (error) {
-      console.error(error);
-    });
+
+    })
     const optionsDai = {
       method: 'GET',
       url: 'https://criptoya.com/api/Dai/ars/0.1',
     };
 
     axios.request(optionsDai).then(response => {
-      this.exchangesDai = Object.keys(response.data).map((exchangeDai) => (
-        {
-          exchangeDai,
-          bid: response.data[exchangeDai].totalBid,
-          ask: response.data[exchangeDai].totalAsk,
-        }));
-    }).catch(function (error) {
-      console.error(error);
+      const firstExchangeDai = Object.keys(response.data)[1];
+      if (firstExchangeDai) {
+        this.exchangesDai = [{
+          exchangeDai: firstExchangeDai,
+          bid: response.data[firstExchangeDai].totalBid,
+          ask: response.data[firstExchangeDai].totalAsk,
+
+        }]
+
+      }
+
     });
 
     const optionsUsdt = {
@@ -156,18 +152,19 @@ export default {
     };
 
     axios.request(optionsUsdt).then(response => {
-      this.exchangesUsdt = Object.keys(response.data).map((exchangeUsdt) => (
-        {
-          exchangeUsdt,
-          bid: response.data[exchangeUsdt].totalBid,
-          ask: response.data[exchangeUsdt].totalAsk,
-        }));
-    }).catch(function (error) {
-      console.error(error);
+      const firstExchangeUsdt = Object.keys(response.data)[1];
+      if (firstExchangeUsdt) {
+        this.exchangesUsdt = [{
+          exchangeUsdt: firstExchangeUsdt,
+          bid: response.data[firstExchangeUsdt].totalBid,
+          ask: response.data[firstExchangeUsdt].totalAsk
+        }]
+      }
+
     });
-  },
 
 
+  }
 }
 
 
@@ -201,11 +198,17 @@ body {
 .logocript {
   height: 30px;
   width: 30px;
+  background-color: wheat;
+  border-radius: 50%;
 }
 
 img {
   height: 20px;
   width: 20px;
+}
+
+.encabezado {
+  background-color: rgb(71, 60, 60);
 }
 
 .tablas {

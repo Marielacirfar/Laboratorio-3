@@ -45,7 +45,7 @@ export default {
 
             this.$store.commit("setNombreUsuario", this.nombreUsuario);
 
-            console.log("User email saved in store:", this.$store.state.nombreUsuario);
+            console.log("Usuario guardado en el store:", this.$store.state.nombreUsuario);
             this.$router.push("/NegociacionComp");
         }
     }

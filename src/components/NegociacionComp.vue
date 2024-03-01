@@ -92,19 +92,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(transaccion, index) in historialTransacciones" :key="index">
+                    <tr v-for="(transaccion, index) in $store.state.historialTransacciones" :key="index">
                         <td>{{ transaccion.cryptoCode }}</td>
                         <td>{{ transaccion.action }}</td>
                         <td>{{ transaccion.action === 'venta' ? '-' : transaccion.cryptoAmountCompra }}</td>
                         <td>{{ transaccion.action === 'compra' ? '-' : transaccion.cryptoAmountVenta }}</td>
-                        <td>{{ transaccion.disponibilidad }}</td>
-                        <td>"{{ transaccion.action === 'venta' ? '-' : transaccion.totalAsk }}"</td>
-                        <td>"{{ transaccion.action === 'compra' ? '-' : transaccion.totalBid }}"</td>
+                        <td>"{{ transaccion.disponibilidad }}"</td>
+                        <td>{{ transaccion.action === 'venta' ? '-' : transaccion.totalAsk }}</td>
+                        <td>{{ transaccion.action === 'compra' ? '-' : transaccion.totalBid }}</td>
                         <td>{{ transaccion.datetime }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <button @click="irAHistorialMov" class="btn btn-primary">
+            Ver Historial
+        </button>
     </div>
 </template>
   
@@ -112,8 +115,9 @@
 
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 import cryptoService from '../services/cryptoService'
+import { mapMutations } from 'vuex';
 
 export default {
     name: "NegociacionComp",
@@ -139,6 +143,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['agregarTransaccion']),
         async cambiarAccion(accion) {
             this.action = accion;
 
@@ -172,34 +177,39 @@ export default {
         },
         async realizarTransaccion() {
             try {
-                const apiKey = '60eb09146661365596af552f';
                 let action = "";
                 let cryptoAmount = ""
                 let disponibilidad = "-"
                 let money = ""
-
-                if (this.$data.action == 'venta') {
-                    const cantidadComprada = this.historialTransacciones
+                if (this.$data.action === 'venta') {
+                    // Calcula la cantidad total comprada antes de la venta
+                    const cantidadCompradaTotal = this.$store.state.historialTransacciones
                         .filter(transaccion => transaccion.action === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
                         .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
 
-                    if (parseFloat(this.cryptoAmountVenta) > cantidadComprada) {
+                    // Calcula la cantidad total vendida antes de la venta
+                    const cantidadVendidaTotal = this.$store.state.historialTransacciones
+                        .filter(transaccion => transaccion.action === 'venta' && transaccion.cryptoCode === this.$data.cryptoCode)
+                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountVenta), 0);
 
-                        console.error('No hay suficiente cantidad para vender');
+                    // Calcula la cantidad después de la venta
+                    const cantidadDespuesDeVenta = cantidadCompradaTotal - cantidadVendidaTotal - parseFloat(this.cryptoAmountVenta);
+
+                    if (cantidadDespuesDeVenta < 0) {
+                        alert('No hay suficiente cantidad para vender');
                         return;
                     }
 
+                    disponibilidad = cantidadDespuesDeVenta;
+                } else if (this.$data.action === 'compra') {
+                    // Calcula la cantidad total comprada antes de la nueva compra
+                    const cantidadCompradaTotal = this.$store.state.historialTransacciones
+                        .filter(transaccion => transaccion.action === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
+                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
 
-                    disponibilidad = cantidadComprada - parseFloat(this.cryptoAmountVenta);
-                } else if (this.$data.action == 'compra') {
-                    const cantidadCompradaActual = parseFloat(this.cryptoAmountCompra);
-                    const cantidadCompradaTotalAnterior = this.historialTransacciones
-                        .filter(transaccion => transaccion.accion === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
-                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0)
-
-                    disponibilidad = cantidadCompradaActual + cantidadCompradaTotalAnterior;
+                    // Agrega la cantidad de la compra actual a la disponibilidad
+                    disponibilidad = cantidadCompradaTotal + parseFloat(this.cryptoAmountCompra);
                 }
-
                 if (this.$data.action == 'compra') {
                     action = 'purchase';
                     cryptoAmount = this.cryptoAmountCompra
@@ -219,17 +229,8 @@ export default {
                     "money": money,
                     "datetime": this.formatoFecha()
                 }
-                const response = await axios.post(
-                    'https://laboratorio3-f36a.restdb.io/rest/transactions',
-                    body,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'x-apikey': apiKey,
-                        },
-                    }
-                );
-                this.historialTransacciones.push({
+                await cryptoService.realizarTransaccion(body);
+                this.agregarTransaccion({
                     cryptoCode: this.cryptoCode,
                     action: this.action,
                     cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
@@ -240,11 +241,15 @@ export default {
                     datetime: this.formatoFecha(),
                 });
 
-                console.log('Response:', response.data);
+
             } catch (error) {
                 console.error('Error:', error);
             }
         },
+        irAHistorialMov() {
+
+            this.$router.push({ name: 'HistorialMov' });
+        }
 
 
     },
@@ -285,6 +290,13 @@ form {
     color: rgb(42, 22, 22);
     font-size: xx-large;
     text-shadow: 2px 2px 5px rgba(245, 34, 34, 0.54);
+}
+
+.card-img-top {
+    height: 150px;
+    width: 150px;
+    margin: auto;
+
 }
 
 
