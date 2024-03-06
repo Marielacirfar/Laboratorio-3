@@ -34,13 +34,14 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            La cantidad de {{ action }} de: {{ cryptoCode }} es: {{ action === 'compra' ? cryptoAmountCompra
-                                :
-                                cryptoAmountVenta }}
+                            La cantidad de {{ action }} de: {{ cryptoCode }} es: {{ action === 'compra' ?
+                cryptoAmountCompra
+                :
+                cryptoAmountVenta }}
                         </li>
                         <li class="list-group-item">El total pagado es: $ {{ action === 'compra' ? totalAsk *
-                            cryptoAmountCompra :
-                            totalBid * cryptoAmountVenta }}
+                cryptoAmountCompra :
+                totalBid * cryptoAmountVenta }}
 
                         </li>
 
@@ -73,7 +74,8 @@
             <br>
             <br>
             <br>
-            <button type="button" @click="realizarTransaccion" class="btn btn-outline-danger m-4" :disabled="action === ''">
+            <button type="button" @click="realizarTransaccion" class="btn btn-outline-danger m-4"
+                :disabled="action === ''">
                 Realizar transacción
             </button>
         </div>
@@ -110,7 +112,7 @@
         </button>
     </div>
 </template>
-  
+
 
 
 
@@ -124,6 +126,7 @@ export default {
     data() {
         return {
             userId: this.$store.state.nombreUsuario,
+            id: "",
             action: "",
             cryptoCode: "",
             cryptoAmount: "",
@@ -206,9 +209,12 @@ export default {
                     const cantidadCompradaTotal = this.$store.state.historialTransacciones
                         .filter(transaccion => transaccion.action === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
                         .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
+                    const cantidadVendidaTotal = this.$store.state.historialTransacciones
+                        .filter(transaccion => transaccion.action === 'venta' && transaccion.cryptoCode === this.$data.cryptoCode)
+                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountVenta), 0)
 
                     // Agrega la cantidad de la compra actual a la disponibilidad
-                    disponibilidad = cantidadCompradaTotal + parseFloat(this.cryptoAmountCompra);
+                    disponibilidad = cantidadCompradaTotal - cantidadVendidaTotal + parseFloat(this.cryptoAmountCompra);
                 }
                 if (this.$data.action == 'compra') {
                     action = 'purchase';
@@ -223,6 +229,7 @@ export default {
                 }
                 let body = {
                     "user_id": this.$data.userId,
+                    "id": this.$data.id,
                     "action": action,
                     "crypto_code": this.$data.cryptoCode,
                     "crypto_amount": cryptoAmount,
@@ -233,12 +240,14 @@ export default {
                 this.agregarTransaccion({
                     cryptoCode: this.cryptoCode,
                     action: this.action,
+                    id: this.id,
                     cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
                     cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
                     totalAsk: this.action === 'compra' ? money : '-',
                     totalBid: this.action === 'venta' ? money : '-',
                     disponibilidad: disponibilidad,
                     datetime: this.formatoFecha(),
+
                 });
 
 
@@ -271,6 +280,7 @@ export default {
 }
 
 </script>
+
 <style scoped>
 form {
     color: aliceblue;

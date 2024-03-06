@@ -7,7 +7,7 @@ export default new Vuex.Store({
     historialTransacciones: []
   },
   mutations: {
-    setUserEmail(state, nombreUsuario) {
+    setUserName(state, nombreUsuario) {
       state.nombreUsuario = nombreUsuario;
       localStorage.setItem('nombreUsuario', nombreUsuario)
     },
@@ -15,6 +15,7 @@ export default new Vuex.Store({
       state.historialTransacciones.push(transaccion);
 
     },
+
   },
   actions: {},
   modules: {},

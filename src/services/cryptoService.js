@@ -2,6 +2,7 @@ import axios from "axios";
 
 
 const BASE_URL = 'https://criptoya.com/api/buenbit/';
+const URL_base = 'https://laboratorio3-f36a.restdb.io/rest/transactions';
 const apiKey = '60eb09146661365596af552f';
 export default {
     async getCryptoInfo(crypto, action) {
@@ -33,7 +34,66 @@ export default {
         }
 
 
-    }
+    },
+    async leerTransaccion(id) {
+        try {
+            const response = await axios.get(`${URL_base}/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-apikey': apiKey,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al leer transacción', error);
+            throw error;
+        }
+    },
+    async editarTransaccion(id, newData) {
+        try {
+            const response = await axios.patch(`${URL_base}/${id}`, newData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-apikey': apiKey,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al editar transacción', error);
+            throw error;
+        }
+    },
+
+    async borrarTransaccion(id) {
+        try {
+            const response = await axios.delete(`${URL_base}/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-apikey': apiKey,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al borrar transacción', error);
+            throw error;
+        }
+    },
+    async getTransaccionesUsuario(userId) {
+        try {
+            const response = await axios.get(`${URL_base}?q={"user_id": "${userId}"}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-apikey': apiKey,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener transacciones del usuario', error);
+            throw error;
+        }
+    },
+
+
 
 
 }
