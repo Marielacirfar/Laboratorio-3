@@ -5,9 +5,7 @@
         </div>
 
         <div class="row">
-
-            <div class="col-12 col-md-4">
-
+            <div class="col-md-4 mb-3">
                 <label class="form-label text-white">Tipo de moneda que desea comprar</label>
                 <select v-model.trim="tipoCompra" class="form-select" required>
                     <option disabled selected value="">Seleccione una moneda</option>
@@ -17,17 +15,16 @@
                     <option>Dai</option>
                 </select>
                 <label class="form-label text-white">Seleccione la cantidad que desea comprar</label>
-                <input type="number" v-model.trim="cryptoAmountCompra">
+                <input type="number" v-model.trim="cryptoAmountCompra" class="form-control">
                 <button type="button"
                     :class="{ 'btn btn-primary': action === 'compra', 'btn btn-outline-primary': action !== 'compra' }"
                     @click="cambiarAccion('compra')">
                     Compra
                 </button>
-
             </div>
 
-            <div class="col-12 col-md-4 mx-auto">
-                <div class="card" style="width: 25rem;">
+            <div class="col-md-4 mb-3">
+                <div class="card">
                     <img :src="cryptoImage" :key="cryptoImage" class="card-img-top" alt="Crypto Image">
                     <div class="card-body">
                         <h3 class="card-title">{{ action }}</h3>
@@ -35,23 +32,16 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             La cantidad de {{ action }} de: {{ cryptoCode }} es: {{ action === 'compra' ?
-                cryptoAmountCompra
-                :
-                cryptoAmountVenta }}
+                cryptoAmountCompra : cryptoAmountVenta }}
                         </li>
                         <li class="list-group-item">El total pagado es: $ {{ action === 'compra' ? totalAsk *
-                cryptoAmountCompra :
-                totalBid * cryptoAmountVenta }}
-
-                        </li>
-
+                cryptoAmountCompra : totalBid * cryptoAmountVenta }}</li>
                         <li class="list-group-item">Fecha {{ formatoFecha() }}</li>
-
                     </ul>
                 </div>
             </div>
 
-            <div class="col-12 col-md-4">
+            <div class="col-md-4 mb-3">
                 <label class="form-label text-white">Tipo de moneda que desea vender</label>
                 <select v-model.trim="tipoVenta" class="form-select" required>
                     <option disabled selected value="">Seleccione una moneda</option>
@@ -61,7 +51,7 @@
                     <option>Dai</option>
                 </select>
                 <label class="form-label text-white">Seleccione la cantidad que desea vender</label>
-                <input type="number" v-model.trim="cryptoAmountVenta">
+                <input type="number" v-model.trim="cryptoAmountVenta" class="form-control">
                 <button type="button"
                     :class="{ 'btn btn-primary': action === 'venta', 'btn btn-outline-primary': action !== 'venta' }"
                     @click="cambiarAccion('venta')">
@@ -70,15 +60,14 @@
             </div>
         </div>
 
-        <div>
-            <br>
-            <br>
-            <br>
-            <button type="button" @click="realizarTransaccion" class="btn btn-outline-danger m-4"
-                :disabled="action === ''">
-                Realizar transacción
-            </button>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <button @click="realizarTransaccion" class="btn btn-outline-danger m-4" :disabled="action === ''">
+                    Realizar transacción
+                </button>
+            </div>
         </div>
+
         <div class="table-responsive">
             <table class="table table-dark">
                 <thead>
@@ -107,17 +96,16 @@
                 </tbody>
             </table>
         </div>
-        <button @click="irAHistorialMov" class="btn btn-primary">
-            Ver Historial
-        </button>
+        <button @click="irAHistorialMov" class="btn btn-primary">Ver Historial</button>
     </div>
 </template>
 
 
 
 
+
 <script>
-//import axios from 'axios';
+
 import cryptoService from '../services/cryptoService'
 import { mapMutations } from 'vuex';
 
@@ -245,7 +233,7 @@ export default {
                     cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
                     totalAsk: this.action === 'compra' ? money : '-',
                     totalBid: this.action === 'venta' ? money : '-',
-                    disponibilidad: disponibilidad,
+                    disponibilidad: disponibilidad.toFixed(3),
                     datetime: this.formatoFecha(),
 
                 });
@@ -288,13 +276,7 @@ form {
 
 }
 
-.h1 {
-    text-align: center;
-    border: 2px solid rgb(110, 103, 103);
-    box-shadow: 0px 0px 10px 0px #f2eeee inset;
-    padding: 5px;
-    color: aliceblue;
-}
+
 
 .card-title {
     color: rgb(42, 22, 22);
@@ -326,7 +308,7 @@ input {
     height: 35px;
     font-size: 15px;
     border: none;
-    margin: 40px;
+    margin: 30px 100px;
     border-radius: 20px;
     text-align: center;
 
@@ -339,7 +321,7 @@ label {
 button {
     width: 300px;
     height: 35px;
-
+    margin: 30px 100px;
     cursor: pointer;
     border-radius: 20px;
     color: white;

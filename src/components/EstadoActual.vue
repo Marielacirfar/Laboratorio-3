@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Estado Financiero de: {{ userId }}</h1>
+        <h1 class="h1">Estado financiero actual de: {{ userId }}</h1>
         <div class="table-responsive">
             <table class="table table-dark">
                 <thead>
@@ -20,7 +20,7 @@
             </table>
         </div>
         <div>
-            <h2>Total: $ {{ totalMoney }}</h2>
+            <h2>Total obtenido por todas las transacciones: $ {{ totalMoney }}</h2>
         </div>
     </div>
 </template>
@@ -29,6 +29,7 @@
 import { mapState } from 'vuex';
 
 export default {
+    name: "EstadoActual",
     data() {
         return {
             userId: this.$store.state.nombreUsuario,
@@ -67,8 +68,8 @@ export default {
                 });
                 netCryptos.push({
                     cryptoCode,
-                    disponibilidad: totaDisponibilidad.toFixed(3), // Ajustar la precisión según sea necesario
-                    totalMoney: totalMoney.toFixed(2) // Ajustar la precisión según sea necesario
+                    disponibilidad: totaDisponibilidad.toFixed(3),
+                    totalMoney: totalMoney.toFixed(2)
                 });
             }
             return netCryptos;
@@ -82,6 +83,10 @@ export default {
 };
 </script>
 
-<style>
-/* Estilos CSS según sea necesario */
+<style scoped>
+h2 {
+    color: rgb(192, 175, 175);
+    font-size: xx-large;
+    text-shadow: 2px 2px 5px rgba(241, 234, 234, 0.906);
+}
 </style>

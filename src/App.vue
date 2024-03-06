@@ -13,6 +13,7 @@
 
   </div>
 </template>
+
 <script>
 
 
@@ -41,6 +42,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #e5e9ed;
+}
+
+.h1 {
+  text-align: center;
+  border: 2px solid rgb(110, 103, 103);
+  box-shadow: 0px 0px 10px 0px #f2eeee inset;
+  padding: 10px;
+  color: rgb(192, 175, 175);
+  text-shadow: 2px 2px 5px rgba(241, 234, 234, 0.906);
 }
 
 nav {

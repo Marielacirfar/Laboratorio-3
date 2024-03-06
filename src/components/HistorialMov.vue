@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Historial de movimiento de {{ userId }}</h1>
+        <h1 class="h1">Historial de movimiento de {{ userId }}</h1>
         <div class="table-responsive">
             <table class="table table-dark">
                 <thead>
@@ -45,6 +45,9 @@
 
 
         </div>
+        <button @click="irEstadoActual" class="btn btn-primary">
+            Ver Estado Financiero actualizado
+        </button>
     </div>
 </template>
 
@@ -116,6 +119,10 @@ export default {
             } catch (error) {
                 console.error('Error al borrar la transacción', error);
             }
+        },
+        irEstadoActual() {
+
+            this.$router.push({ name: 'EstadoActual' });
         }
 
     },
@@ -129,3 +136,5 @@ export default {
 }
 
 </script>
+
+<style scoped></style>
