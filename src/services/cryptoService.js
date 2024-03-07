@@ -1,3 +1,4 @@
+import store from "@/store";
 import axios from "axios";
 
 
@@ -26,7 +27,6 @@ export default {
                     },
                 }
             );
-            console.log('Response:', response.data);
             return response.data;
         } catch (error) {
             console.error('Error', error);
@@ -78,7 +78,9 @@ export default {
             throw error;
         }
     },
-    async getTransaccionesUsuario(userId) {
+    async getTransaccionesUsuario() {
+        console.log("nombreUsuario", store.state.nombreUsuario)
+        const userId = store.state.nombreUsuario;
         try {
             const response = await axios.get(`${URL_base}?q={"user_id": "${userId}"}`, {
                 headers: {

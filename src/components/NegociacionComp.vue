@@ -76,19 +76,19 @@
                         <th>Compra/Venta</th>
                         <th>Cantidad Comprada</th>
                         <th>Cantidad Vendida</th>
-                        <th>Disponibilidad</th>
+
                         <th>Precio pagado por la compra</th>
                         <th>Precio obtenido por la venta</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(transaccion, index) in $store.state.historialTransacciones" :key="index">
+                    <tr v-for="(transaccion, index) in historialTransacciones" :key="index">
                         <td>{{ transaccion.cryptoCode }}</td>
                         <td>{{ transaccion.action }}</td>
                         <td>{{ transaccion.action === 'venta' ? '-' : transaccion.cryptoAmountCompra }}</td>
                         <td>{{ transaccion.action === 'compra' ? '-' : transaccion.cryptoAmountVenta }}</td>
-                        <td>"{{ transaccion.disponibilidad }}"</td>
+
                         <td>{{ transaccion.action === 'venta' ? '-' : transaccion.totalAsk }}</td>
                         <td>{{ transaccion.action === 'compra' ? '-' : transaccion.totalBid }}</td>
                         <td>{{ transaccion.datetime }}</td>
@@ -106,9 +106,11 @@
 
 <script>
 
-import cryptoService from '../services/cryptoService'
-import { mapMutations } from 'vuex';
 
+
+import cryptoService from '../services/cryptoService'
+
+//falta ajustar la logica de la disponibilidad de venta
 export default {
     name: "NegociacionComp",
     data() {
@@ -134,7 +136,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['agregarTransaccion']),
+
         async cambiarAccion(accion) {
             this.action = accion;
 
@@ -166,53 +168,56 @@ export default {
 
             return formattedDateTime;
         },
+
+
         async realizarTransaccion() {
             try {
                 let action = "";
                 let cryptoAmount = ""
-                let disponibilidad = "-"
                 let money = ""
-                if (this.$data.action === 'venta') {
-                    // Calcula la cantidad total comprada antes de la venta
-                    const cantidadCompradaTotal = this.$store.state.historialTransacciones
-                        .filter(transaccion => transaccion.action === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
-                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
 
-                    // Calcula la cantidad total vendida antes de la venta
-                    const cantidadVendidaTotal = this.$store.state.historialTransacciones
-                        .filter(transaccion => transaccion.action === 'venta' && transaccion.cryptoCode === this.$data.cryptoCode)
-                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountVenta), 0);
 
-                    // Calcula la cantidad después de la venta
-                    const cantidadDespuesDeVenta = cantidadCompradaTotal - cantidadVendidaTotal - parseFloat(this.cryptoAmountVenta);
-
-                    if (cantidadDespuesDeVenta < 0) {
-                        alert('No hay suficiente cantidad para vender');
-                        return;
-                    }
-
-                    disponibilidad = cantidadDespuesDeVenta;
-                } else if (this.$data.action === 'compra') {
-                    // Calcula la cantidad total comprada antes de la nueva compra
-                    const cantidadCompradaTotal = this.$store.state.historialTransacciones
-                        .filter(transaccion => transaccion.action === 'compra' && transaccion.cryptoCode === this.$data.cryptoCode)
-                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
-                    const cantidadVendidaTotal = this.$store.state.historialTransacciones
-                        .filter(transaccion => transaccion.action === 'venta' && transaccion.cryptoCode === this.$data.cryptoCode)
-                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountVenta), 0)
-
-                    // Agrega la cantidad de la compra actual a la disponibilidad
-                    disponibilidad = cantidadCompradaTotal - cantidadVendidaTotal + parseFloat(this.cryptoAmountCompra);
-                }
                 if (this.$data.action == 'compra') {
                     action = 'purchase';
                     cryptoAmount = this.cryptoAmountCompra
                     money = this.totalAsk * this.cryptoAmountCompra
+                    this.historialTransacciones.push({
+                        cryptoCode: this.cryptoCode,
+                        action: this.action,
+                        id: this.id,
+                        cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
+                        cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
+                        totalAsk: this.action === 'compra' ? money : '-',
+                        totalBid: this.action === 'venta' ? money : '-',
+                        datetime: this.formatoFecha(),
+
+                    });
 
                 } else if (this.$data.action == 'venta') {
                     action = 'sale'
                     cryptoAmount = this.cryptoAmountVenta
                     money = this.totalBid * this.cryptoAmountVenta
+
+                    const cantidadComprada = this.historialTransacciones
+                        .filter(transaccion => transaccion.cryptoCode === this.cryptoCode && transaccion.action === 'compra')
+                        .reduce((total, transaccion) => total + parseFloat(transaccion.cryptoAmountCompra), 0);
+                    if (parseFloat(cryptoAmount) <= cantidadComprada) {
+                        this.historialTransacciones.push({
+                            cryptoCode: this.cryptoCode,
+                            action: this.action,
+                            id: this.id,
+                            cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
+                            cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
+                            totalAsk: this.action === 'compra' ? money : '-',
+                            totalBid: this.action === 'venta' ? money : '-',
+                            datetime: this.formatoFecha(),
+
+                        });
+
+                    } else {
+                        alert('No hay suficiente cantidad para vender');
+                        return;
+                    }
 
                 }
                 let body = {
@@ -225,18 +230,6 @@ export default {
                     "datetime": this.formatoFecha()
                 }
                 await cryptoService.realizarTransaccion(body);
-                this.agregarTransaccion({
-                    cryptoCode: this.cryptoCode,
-                    action: this.action,
-                    id: this.id,
-                    cryptoAmountCompra: this.action === 'compra' ? cryptoAmount : '-',
-                    cryptoAmountVenta: this.action === 'venta' ? cryptoAmount : '-',
-                    totalAsk: this.action === 'compra' ? money : '-',
-                    totalBid: this.action === 'venta' ? money : '-',
-                    disponibilidad: disponibilidad.toFixed(3),
-                    datetime: this.formatoFecha(),
-
-                });
 
 
             } catch (error) {

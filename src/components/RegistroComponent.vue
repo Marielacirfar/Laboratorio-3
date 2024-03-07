@@ -22,8 +22,8 @@
         </div>
     </div>
 </template>
-  
-  
+
+
 <script>
 export default {
     name: "RegistroComponent",
@@ -40,7 +40,7 @@ export default {
     methods: {
         crearUsuario: function () {
             if (!this.isUsuarioValid) {
-                return; // No hacer nada si el usuario no es válido
+                return;
             }
 
             this.$store.commit("setNombreUsuario", this.nombreUsuario);

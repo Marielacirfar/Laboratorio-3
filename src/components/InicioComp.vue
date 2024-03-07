@@ -6,7 +6,7 @@
     </div>
 
     <div class="row">
-      <!-- Bitcoin Card -->
+
       <div class="col-md-6">
         <div class="card bg-dark text-light mb-3">
           <div class="card-header encabezado">
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <!-- Ethereum Card -->
+
       <div class="col-md-6">
         <div class="card bg-dark text-light mb-3">
           <div class="card-header encabezado">
@@ -42,7 +42,7 @@
     </div>
 
     <div class="row">
-      <!-- DAI Card -->
+
       <div class="col-md-6">
         <div class="card bg-dark text-light mb-3">
           <div class="card-header encabezado">
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <!-- USDT Card -->
+
       <div class="col-md-6">
         <div class="card bg-dark text-light mb-3">
           <div class="card-header encabezado">
