@@ -2,7 +2,7 @@
     <div>
         <h1 class="h1">Historial de movimiento de {{ userId }}</h1>
         <div v-if="cargando">
-            <h3>Cargando</h3>
+            <h3>Cargando...</h3>
         </div>
         <div v-else>
             <div class="table-responsive">
@@ -22,17 +22,20 @@
                             <td>{{ transaccion.crypto_code }}</td>
                             <td>{{ transaccion.action == "purchase" ? "Compra" : "Venta" }}</td>
                             <td>{{ transaccion.crypto_amount }}</td>
-                            <td>{{ transaccion.money }}</td>
+                            <td>$ {{ transaccion.money }}</td>
                             <td>{{ transaccion.datetime }}</td>
                             <td> <!-- Botones de acción -->
-                                <button @click="leerTransaccion(transaccion._id)">Leer</button>
-                                <button @click="editarTransaccion(transaccion._id)">Editar</button>
-                                <div v-if="eliminando[transaccion._id] != null || eliminando[transaccion._id] == true">
-                                    <div class="spinner-border text-danger" role="status">
+                                <div class="btn-group">
+                                    <button @click="leerTransaccion(transaccion._id)">Leer</button>
+                                    <button @click="editarTransaccion(transaccion._id)">Editar</button>
+                                    <div
+                                        v-if="eliminando[transaccion._id] != null || eliminando[transaccion._id] == true">
+                                        <div class="spinner-border text-danger" role="status">
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-else>
-                                    <button @click="borrarTransaccion(transaccion._id)">Borrar</button>
+                                    <div v-else>
+                                        <button @click="borrarTransaccion(transaccion._id)">Borrar</button>
+                                    </div>
                                 </div>
                             </td>
 
@@ -47,8 +50,8 @@
             <p><strong>Cryptomoneda: </strong>{{ transaccionSeleccionada.crypto_code }}</p>
             <p><strong>Accion: </strong>{{ transaccionSeleccionada.action == "purchase" ? "Compra" : "Venta" }}</p>
             <p><strong>Cantidad: </strong>{{ transaccionSeleccionada.crypto_amount }}</p>
-            <p><strong>Precio: </strong>{{ transaccionSeleccionada.money }}</p>
-            <p><strong>Fecha: </strong>{{ transaccionSeleccionada.datetime }}</p>
+            <p><strong>Precio: </strong>$ {{ transaccionSeleccionada.money }}</p>
+            <p><strong>Fecha: </strong>{{ getFechaArgentina(transaccionSeleccionada.datetime) }}</p>
 
 
         </div>
@@ -67,11 +70,11 @@
                 </div>
                 <div>
                     <label for="cryptoAmount">Cantidad:</label>
-                    <input type="number" id="cryptoAmount" v-model="formularioEdicion.crypto_amount">
+                    <input type="number" id="cryptoAmount" v-model="formularioEdicion.crypto_amount" disabled>
                 </div>
                 <div>
                     <label for="money">Precio:</label>
-                    <input type="number" id="money" v-model="formularioEdicion.money">
+                    <input type="number" id="money" v-model="formularioEdicion.money" step="any">
                 </div>
                 <div>
                     <label for="datetime">Fecha:</label>
@@ -132,6 +135,20 @@ export default {
             }
 
         },
+        getFechaArgentina(datetime) {
+            const fechaUTC = new Date(datetime);
+            const fechaArgentina = new Date(fechaUTC.getTime() + (3 * 60 * 60 * 1000));
+
+
+            const dia = fechaArgentina.getDate().toString().padStart(2, '0');
+            const mes = (fechaArgentina.getMonth() + 1).toString().padStart(2, '0');
+            const año = fechaArgentina.getFullYear();
+            const horas = fechaArgentina.getHours().toString().padStart(2, '0');
+            const minutos = fechaArgentina.getMinutes().toString().padStart(2, '0');
+            const segundos = fechaArgentina.getSeconds().toString().padStart(2, '0');
+
+            return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
+        },
 
         async leerTransaccion(id) {
             try {
@@ -182,6 +199,7 @@ export default {
             this.eliminando[id] = true
             try {
                 await cryptoService.borrarTransaccion(id);
+                alert('Transaccion borrada con exito')
                 console.log('Transacción borrada correctamente');
 
             } catch (error) {

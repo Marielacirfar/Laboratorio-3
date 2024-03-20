@@ -10,6 +10,7 @@
           <li><router-link to="./HistorialMov" class="nav-link px-2 text-black">Historial de movimientos</router-link>
           </li>
           <li><router-link to="./EstadoActual" class="nav-link px-2 text-black">Estado actual</router-link></li>
+
         </ul>
 
       </div>
@@ -24,6 +25,7 @@ export default {
   name: "NavBar",
 
 
+
 };
 
 </script>
@@ -34,4 +36,3 @@ img {
   width: 1.5em;
 }
 </style>
-

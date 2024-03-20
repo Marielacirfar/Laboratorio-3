@@ -3,8 +3,8 @@ import axios from "axios";
 
 
 const BASE_URL = 'https://criptoya.com/api/buenbit/';
-const URL_base = 'https://laboratorio3-f36a.restdb.io/rest/transactions';
-const apiKey = '60eb09146661365596af552f';
+const URL_base = 'https://laboratorio3-5459.restdb.io/rest/transactions';
+const apiKey = '64a57c2b86d8c50fe6ed8fa5';
 export default {
     async getCryptoInfo(crypto, action) {
         try {
@@ -18,7 +18,7 @@ export default {
     async realizarTransaccion(body) {
         try {
             const response = await axios.post(
-                'https://laboratorio3-f36a.restdb.io/rest/transactions',
+                'https://laboratorio3-5459.restdb.io/rest/transactions',
                 body,
                 {
                     headers: {
@@ -27,6 +27,7 @@ export default {
                     },
                 }
             );
+            console.log('Response', response.data)
             return response.data;
         } catch (error) {
             console.error('Error', error);
@@ -57,6 +58,7 @@ export default {
                     'x-apikey': apiKey,
                 },
             });
+            console.log('Response', response.data)
             return response.data;
         } catch (error) {
             console.error('Error al editar transacción', error);
@@ -88,6 +90,7 @@ export default {
                     'x-apikey': apiKey,
                 },
             });
+            console.log('transacciones del usuario:', response.data);
             return response.data;
         } catch (error) {
             console.error('Error al obtener transacciones del usuario', error);

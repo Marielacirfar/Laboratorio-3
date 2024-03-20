@@ -13,8 +13,8 @@
                 <tbody>
                     <tr v-for="(balance, index) in balances" :key="index">
                         <td>{{ balance.crypto_code }}</td>
-                        <td>{{ balance.crypto_amount }}</td>
-                        <td>{{ balance.money }}</td>
+                        <td>{{ balance.crypto_amount.toFixed(2) }}</td>
+                        <td>$ {{ balance.money.toFixed(2) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -32,16 +32,16 @@ export default {
         return {
             userId: this.$store.state.nombreUsuario,
             balances: [],
-            totalObtenido: 0,
-            investments: []
+
+
         }
     },
     created() {
-        this.obtenerEstadoFinanciero()
+        this.obtenerEstadoActual()
 
     },
     methods: {
-        async obtenerEstadoFinanciero() {
+        async obtenerEstadoActual() {
             try {
                 const historial = await cryptoService.getTransaccionesUsuario()
                 const balancesMap = new Map()
@@ -65,14 +65,14 @@ export default {
 
                 const balances = []
                 for (const [crypto_code, crypto_amount] of balancesMap) {
-                    const price = await this.getCryptoInfo(crypto_code, 'venta')
-                    const money = parseFloat(crypto_amount) * parseFloat(price)
+                    const precio = await this.getCryptoInfo(crypto_code, 'venta')
+                    const money = parseFloat(crypto_amount) * parseFloat(precio)
                     balances.push({ crypto_code, crypto_amount, money })
                 }
 
                 this.balances = balances
-            } catch (err) {
-                console.log("Error recuperando el historial de usuario", err)
+            } catch (error) {
+                console.log("Error recuperando el historial de usuario", error)
             }
         },
         async getCryptoInfo(crypto, action) {
