@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="h1">Historial de movimiento de {{ userId }}</h1>
+        <h1 class="h1">Historial de movimientos </h1>
         <div v-if="cargando">
             <h3>Cargando...</h3>
         </div>
@@ -23,8 +23,8 @@
                             <td>{{ transaccion.action == "purchase" ? "Compra" : "Venta" }}</td>
                             <td>{{ transaccion.crypto_amount }}</td>
                             <td>$ {{ transaccion.money }}</td>
-                            <td>{{ transaccion.datetime }}</td>
-                            <td> <!-- Botones de acción -->
+                            <td>{{ getFechaArgentina(transaccion.datetime) }}</td>
+                            <td>
                                 <div class="btn-group">
                                     <button @click="leerTransaccion(transaccion._id)">Leer</button>
                                     <button @click="editarTransaccion(transaccion._id)">Editar</button>
@@ -78,7 +78,7 @@
                 </div>
                 <div>
                     <label for="datetime">Fecha:</label>
-                    <input type="text" id="datetime" v-model="formularioEdicion.datetime" disabled>
+                    <input type="text" id="datetime" :value="getFechaArgentina(formularioEdicion.datetime)" disabled>
                 </div>
                 <button type="submit">Guardar cambios</button>
             </form>
@@ -137,15 +137,13 @@ export default {
         },
         getFechaArgentina(datetime) {
             const fechaUTC = new Date(datetime);
-            const fechaArgentina = new Date(fechaUTC.getTime() + (3 * 60 * 60 * 1000));
-
-
-            const dia = fechaArgentina.getDate().toString().padStart(2, '0');
-            const mes = (fechaArgentina.getMonth() + 1).toString().padStart(2, '0');
-            const año = fechaArgentina.getFullYear();
-            const horas = fechaArgentina.getHours().toString().padStart(2, '0');
-            const minutos = fechaArgentina.getMinutes().toString().padStart(2, '0');
-            const segundos = fechaArgentina.getSeconds().toString().padStart(2, '0');
+            fechaUTC.setMinutes(fechaUTC.getMinutes());
+            const dia = fechaUTC.getDate().toString().padStart(2, '0');
+            const mes = (fechaUTC.getMonth() + 1).toString().padStart(2, '0');
+            const año = fechaUTC.getFullYear();
+            const horas = fechaUTC.getHours().toString().padStart(2, '0');
+            const minutos = fechaUTC.getMinutes().toString().padStart(2, '0');
+            const segundos = fechaUTC.getSeconds().toString().padStart(2, '0');
 
             return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
         },

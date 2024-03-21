@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="h1">Analisis de las inversiones: {{ userId }}</h1>
+        <h1 class="h1">Analisis de inverciones realizadas</h1>
         <div class="table-responsive">
             <table class="table table-dark">
                 <thead>

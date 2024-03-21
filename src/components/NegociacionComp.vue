@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <h1 class="h1">Ya te registraste: {{ userId }} hora de negociar</h1>
+            <h1 class="h1">Vamos a Negociar!!!</h1>
         </div>
 
         <div class="row">
@@ -32,10 +32,10 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             La cantidad de {{ action }} de: {{ cryptoCode }} es: {{ action === 'compra' ?
-                cryptoAmountCompra : cryptoAmountVenta }}
+                    cryptoAmountCompra : cryptoAmountVenta }}
                         </li>
                         <li class="list-group-item">El total pagado es: $ {{ action === 'compra' ? totalAsk *
-                cryptoAmountCompra : totalBid * cryptoAmountVenta }}</li>
+                    cryptoAmountCompra : totalBid * cryptoAmountVenta }}</li>
                         <li class="list-group-item">Fecha {{ formatoFecha() }}</li>
                     </ul>
                 </div>
@@ -106,12 +106,9 @@
 
 <script>
 
-
-
 import cryptoService from '../services/cryptoService'
 import { mapMutations } from 'vuex';
 
-//falta ajustar la logica de la disponibilidad de venta
 export default {
     name: "NegociacionComp",
     data() {
@@ -170,20 +167,7 @@ export default {
 
             return formattedDateTime;
         },
-        getFechaArgentina(datetime) {
-            const fechaUTC = new Date(datetime);
-            const fechaArgentina = new Date(fechaUTC.getTime() + (3 * 60 * 60 * 1000));
 
-
-            const dia = fechaArgentina.getDate().toString().padStart(2, '0');
-            const mes = (fechaArgentina.getMonth() + 1).toString().padStart(2, '0');
-            const año = fechaArgentina.getFullYear();
-            const horas = fechaArgentina.getHours().toString().padStart(2, '0');
-            const minutos = fechaArgentina.getMinutes().toString().padStart(2, '0');
-            const segundos = fechaArgentina.getSeconds().toString().padStart(2, '0');
-
-            return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
-        },
 
 
         async realizarTransaccion() {

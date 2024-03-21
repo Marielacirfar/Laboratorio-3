@@ -12,6 +12,11 @@
           <li><router-link to="./EstadoActual" class="nav-link px-2 text-black">Estado actual</router-link></li>
 
         </ul>
+        <div class="registro">
+          <router-link type="button" v-if="$store.state.username === ''">Login</router-link>
+          <p class="text-primary fw-bold  btn btn-outline-secondary " v-else>{{
+            $store.state.nombreUsuario }}</p>
+        </div>
 
       </div>
     </nav>

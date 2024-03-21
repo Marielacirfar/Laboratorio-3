@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="h1">Estado financiero actual de: {{ userId }}</h1>
+        <h1 class="h1">Estado Actual</h1>
         <div class="table-responsive">
             <table class="table table-dark">
                 <thead>
