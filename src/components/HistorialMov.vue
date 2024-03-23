@@ -56,37 +56,53 @@
 
         </div>
 
-        <div v-if="transaccionSeleccionada && mostrandoFormularioEdicion">
+        <div v-if="transaccionSeleccionada && mostrandoFormularioEdicion" class="container mt-4">
             <h2>Editar transacción</h2>
             <form @submit.prevent="guardarCambios">
 
-                <div>
-                    <label for="cryptoCode">Cryptomoneda:</label>
-                    <input type="text" id="cryptoCode" v-model="formularioEdicion.crypto_code" disabled>
+                <div class="mb-3 row align-items-center justify-content-center">
+                    <label for="cryptoCode" class="col-md-2 col-form-label">Cryptomoneda: </label>
+                    <div class="col-md-2">
+                        <input type="text" id="cryptoCode" v-model="formularioEdicion.crypto_code" disabled>
+                    </div>
                 </div>
-                <div>
-                    <label for="action">Acción:</label>
-                    <input type="text" id="action" v-model="formularioEdicion.action" disabled>
+                <div class="mb-3 row align-items-center justify-content-center">
+                    <label for="action" class="col-md-2 col-form-label">Acción: </label>
+                    <div class="col-md-2">
+                        <input type="text" id="action" v-model="formularioEdicion.action" disabled>
+                    </div>
                 </div>
-                <div>
-                    <label for="cryptoAmount">Cantidad:</label>
-                    <input type="number" id="cryptoAmount" v-model="formularioEdicion.crypto_amount" disabled>
+                <div class="mb-3 row align-items-center justify-content-center">
+                    <label for="cryptoAmount" class="col-md-2 col-form-label">Cantidad: </label>
+                    <div class="col-md-2">
+                        <input type="number" id="cryptoAmount" v-model="formularioEdicion.crypto_amount" disabled>
+                    </div>
                 </div>
-                <div>
-                    <label for="money">Precio:</label>
-                    <input type="number" id="money" v-model="formularioEdicion.money" step="any">
+                <div class="mb-3 row align-items-center justify-content-center">
+                    <label for="money" class="col-md-2 col-form-label">Precio: </label>
+                    <div class="col-md-2">
+                        <input type="number" id="money" v-model="formularioEdicion.money" step="any">
+                    </div>
                 </div>
-                <div>
-                    <label for="datetime">Fecha:</label>
-                    <input type="text" id="datetime" :value="getFechaArgentina(formularioEdicion.datetime)" disabled>
+                <div class="mb-3 row align-items-center justify-content-center">
+                    <label for="datetime" class="col-md-2 col-form-label">Fecha: </label>
+                    <div class="col-md-2">
+                        <input type="text" id="datetime" :value="getFechaArgentina(formularioEdicion.datetime)"
+                            disabled>
+                    </div>
                 </div>
-                <button type="submit">Guardar cambios</button>
+                <div class="text-center">
+                    <button type="submit">Guardar cambios</button>
+                </div>
             </form>
         </div>
-
-        <button @click="irEstadoActual" class="btn btn-primary">
-            Ver Estado Financiero actualizado
-        </button>
+        <div class="container mt-4">
+            <div class="text-center">
+                <button @click="irEstadoActual" class="btn btn-primary">
+                    Ver Estado Financiero actualizado
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
