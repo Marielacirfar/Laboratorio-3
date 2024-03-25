@@ -13,7 +13,7 @@
                         <th>Total Dinero Compras</th>
                         <th>Total Dinero Ventas</th>
                         <th>Precio Actual</th>
-                        <th>Importe Resultante</th>
+                        <th>Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
