@@ -113,6 +113,8 @@ export default {
     name: "NegociacionComp",
     data() {
         return {
+            tipoCompra: "",
+            tipoVenta: "",
             userId: this.$store.state.nombreUsuario,
             id: "",
             action: "",
