@@ -38,7 +38,7 @@
 import cryptoService from '@/services/cryptoService';
 
 export default {
-    name: "EstadoActual",
+    name: "AnalisisInverciones",
     data() {
         return {
             userId: this.$store.state.nombreUsuario,
@@ -46,10 +46,10 @@ export default {
         };
     },
     async created() {
-        await this.obtenerEstadoActual();
+        await this.obtenerAnalisis();
     },
     methods: {
-        async obtenerEstadoActual() {
+        async obtenerAnalisis() {
             try {
                 const historial = await cryptoService.getTransaccionesUsuario();
                 const balancesMap = new Map();
